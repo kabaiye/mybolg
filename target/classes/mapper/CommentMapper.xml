@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kabaiye.mapper.CommentMapper">
+    <resultMap id="articleCommentMap" type="com.kabaiye.entity.pojo.ArticleComment">
+        <id property="id" column="id"/>
+        <result property="articleId" column="article_id"/>
+        <result property="content" column="content"/>
+        <result property="commentTime" column="comment_time"/>
+        <association property="fromUser" javaType="com.kabaiye.entity.vo.user.ArticleUser">
+            <result property="userId" column="fromUserid"/>
+            <result property="nickname" column="nickname"/>
+            <result property="avatar" column="avatar"/>
+        </association>
+    </resultMap>
+    <select id="selectAllComment" resultMap="articleCommentMap">
+        select c.id,
+               c.article_id,
+               u.id fromUserid,
+               u.nickname,
+               u.avatar,
+               content,
+               comment_time
+        from article_comment c
+        join user u on u.id = c.from_user_id
+        where deleted = 0
+        order by comment_time desc
+    </select>
+    <resultMap id="selectReplyByPidMap" type="com.kabaiye.entity.vo.comment.CommentReply">
+        <id property="id" column="id"/>
+        <result property="content" column="content"/>
+        <result property="replyTime" column="reply_time"/>
+        <association property="fromUser" javaType="com.kabaiye.entity.vo.user.ArticleUser">
+            <result property="userId" column="fromUserId"/>
+            <result property="nickname" column="nickname"/>
+            <result property="avatar" column="avatar"/>
+        </association>
+    </resultMap>
+    <select id="selectReplyByPid" resultMap="selectReplyByPidMap">
+        select r.id,
+               content,
+               reply_time,
+               u.id fromUserId,
+               u.nickname,
+               u.avatar
+        from article_reply r
+        join user u on u.id=r.from_user_id
+        where comment_id=#{pid} and deleted=0
+        order by reply_time desc
+
+    </select>
+</mapper>

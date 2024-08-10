@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kabaiye.mapper.UserMapper">
+    <select id="selectAll" resultType="com.kabaiye.entity.pojo.User">
+        SELECT id AS userId, username, mobile, nickname, gender,
+               birthday, email, brief, avatar, status,
+               admin, create_time AS createTime
+        FROM user
+        <where>
+            <if test="username != null">
+                user.username LIKE concat('%',#{username},'%')
+            </if>
+            <if test="nickname != null">
+                AND user.nickname LIKE concat('%',#{nickname},'%')
+            </if>
+        </where>
+    </select>
+
+    <update id="updateUser">
+        update user
+        <set>
+            <if test="birthday != null">, birthday=#{birthday} </if>
+            <if test="brief != null">, brief=#{brief} </if>
+            <if test="gender != null">, gender=#{gender} </if>
+            <if test="nickname != null">, nickname=#{nickname} </if>
+        </set>
+        where id=#{userId}
+    </update>
+
+    <insert id="addUser" parameterType="com.kabaiye.entity.pojo.User"  useGeneratedKeys="true" keyProperty="id">
+        insert into user(username, password, mobile,nickname,create_time)
+        values (#{username},#{password},#{mobile},#{nickname},#{createTime})
+    </insert>
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kabaiye.mapper.MessageMapper">
+    <resultMap id="leaveMessageMap" type="com.kabaiye.entity.pojo.LeaveMessage">
+        <id property="id" column="id"/>
+        <result property="pid" column="pid"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+        <association property="fromUser" javaType="com.kabaiye.entity.vo.user.ArticleUser">
+            <id property="userId" column="fromUserId" />
+            <result property="nickname" column="nickname" />
+            <result property="avatar" column="avatar" />
+        </association>
+    </resultMap>
+
+    <!--查询所有非回复留言-->
+    <select id="selectAllMessage" resultMap="leaveMessageMap">
+        select m.id,
+               m.pid,
+               u.id fromUserId,
+               u.nickname,
+               u.avatar,
+               m.content,
+               m.create_time
+        from leave_message m
+        join user u on u.id=m.from_user_id
+        where m.deleted=0 and m.pid is null
+        order by m.create_time desc
+    </select>
+
+    <!--查询pid的所有回复-->
+    <select id="selectReplyByPid" resultMap="leaveMessageMap">
+        select m.id,
+               m.pid,
+               u.id fromUserId,
+               u.nickname,
+               u.avatar,
+               m.content,
+               m.create_time
+        from leave_message m
+        join user u on u.id=m.from_user_id
+        where m.deleted=0 and m.pid = #{pid}
+        order by m.create_time desc
+    </select>
+
+</mapper>

@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/myblog
+    hikari:
+      password: 56689
+      username: root
+      maximum-pool-size: 10
+      minimum-idle: 3
+  data:
+    redis:
+      host: 192.168.70.130
+      port: 6379
+      password: 56689
+      lettuce:
+        pool:
+          max-wait: -1
+          max-idle: 8
+
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    auto-mapping-behavior: full
+# 设置sql日志级别
+logging:
+  level:
+    com:
+      kabaiye:
+        mapper: debug
+
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
